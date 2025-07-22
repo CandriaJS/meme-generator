@@ -6,7 +6,6 @@ on:
       - "main"
     paths:
       - "meme_generator/memes/**"
-      - "meme_generator/memes_jj/**"
       - "meme_generator/memes_emoji/**"
       - "meme_generator/memes_other/**"
   workflow_dispatch:
@@ -34,7 +33,7 @@ jobs:
           version: "latest"
 
       - name: 更新 resource_list.json 文件
-        run: un run tools/update_resource_list.py
+        run: uv run tools/update_resource_list.py
 
       - name: 提交并推送更改
         uses: actions-js/push@master
@@ -69,7 +68,7 @@ jobs:
           version: "latest"
 
       - name: 安装依赖
-        run: uv sync
+        run: uv sync --locked --no-dev
 
       - name: 安装字体
         run: |

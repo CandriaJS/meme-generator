@@ -4,6 +4,7 @@ from typing import Any, Literal, Optional
 
 import filetype
 from fastapi import Depends, FastAPI, Form, HTTPException, Response, UploadFile
+from fastapi.openapi.docs import get_swagger_ui_html
 from pydantic import BaseModel, ValidationError
 
 from meme_generator.compat import model_dump, model_json_schema, type_validate_python
@@ -19,7 +20,16 @@ from meme_generator.meme import CommandShortcut, Meme, MemeArgsModel, ParserOpti
 from meme_generator.utils import MemeProperties, render_meme_list, run_sync
 from meme_generator.version import __version__
 
-app = FastAPI()
+app = FastAPI(docs_url=None)
+
+@app.get("/docs", include_in_schema=False)
+async def custom_swagger_ui_html():
+    return get_swagger_ui_html(
+        openapi_url=str(app.openapi_url),
+        title=app.title + " - Swagger UI",
+        swagger_js_url="https://cdn.bootcdn.net/ajax/libs/swagger-ui/5.26.0/swagger-ui-bundle.min.js",
+        swagger_css_url="https://cdn.bootcdn.net/ajax/libs/swagger-ui/5.26.0/swagger-ui.css"
+    )
 
 
 class MemeArgsResponse(BaseModel):

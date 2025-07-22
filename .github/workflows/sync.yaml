@@ -43,15 +43,15 @@ jobs:
         run: |
           
           rsync -a --delete \
-            ${{ github.workspace }}/meme/meme_generator/meme/memes/ \
-            meme_generator/meme/memes/
+            ${{ github.workspace }}/meme/memes/ \
+            meme_generator/memes/
             
           rsync -a --delete --exclude='README.md' \
             ${{ github.workspace }}/meme/memes_emoji/emoji/ \
             meme_generator/meme/memes_emoji/
+          
+          rm -rf ${{ github.workspace }}/meme
             
-          rm -rf ${{ github.workspace }}/meme ${{ github.workspace }}/memes_jj ${{ github.workspace }}/memes_emoji
-
       - name: 提交并推送更改
         uses: actions-js/push@master
         with:

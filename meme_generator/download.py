@@ -79,14 +79,14 @@ async def check_resources():
     for resource in resource_list:
         file_name = str(resource["path"])
         file_hash = str(resource["hash"])
-        file_path = Path(__file__).parent / "meme" / file_name
+        file_path = Path(__file__).parent / file_name
         if (
             file_path.exists()
             and hashlib.md5(file_path.read_bytes()).hexdigest() == file_hash
         ):
             continue
         else:
-            download_list.append((file_path, f"meme_generator/meme/{file_name}"))
+            download_list.append((file_path, f"meme_generator/{file_name}"))
 
     if len(download_list):
         logger.info("Downloading images ...")

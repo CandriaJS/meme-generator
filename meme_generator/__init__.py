@@ -1,6 +1,6 @@
 from pathlib import Path
 
-# from meme_generator.config import meme_config as config
+from meme_generator.config import meme_config as config
 from meme_generator.manager import add_meme as add_meme
 from meme_generator.manager import get_meme as get_meme
 from meme_generator.manager import get_meme_keys as get_meme_keys
@@ -22,7 +22,7 @@ for dir_name in MEME_DIRS:
     meme_dir = Path(__file__).parent / dir_name
     if not meme_dir.exists():
         continue
-    module_prefix = f"meme_generator.meme.{dir_name}" 
+    module_prefix = f"meme_generator.{dir_name}" 
     for path in meme_dir.iterdir():
         if path.is_dir():
             load_meme(f"{module_prefix}.{path.name}")

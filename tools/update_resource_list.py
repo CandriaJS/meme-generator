@@ -6,9 +6,9 @@ dir_path = Path(__file__).parent
 project_path = dir_path.parent
 
 meme_paths = [
-    project_path / "meme_generator" / "meme" / "memes",
-    project_path / "meme_generator" / "meme" / "memes_emoji", 
-    project_path / "meme_generator" / "meme" / "memes_other", 
+    project_path / "meme_generator"  / "memes",
+    project_path / "meme_generator"  / "memes_emoji", 
+    project_path / "meme_generator"  / "memes_other", 
 ]
 
 resource_list_path = project_path / "resources" / "resource_list.json"
@@ -22,7 +22,7 @@ def update():
                 continue
             resource_list.append(
                 {
-                    "path": str(file.relative_to(memes_path.parent).as_posix()),
+                    "path": str(file.relative_to(memes_path).as_posix()),
                     "hash": hashlib.md5(file.read_bytes()).hexdigest(),
                 }
             )
