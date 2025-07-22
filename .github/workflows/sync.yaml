@@ -1,0 +1,72 @@
+name: 同步表情仓库
+
+on:
+  schedule:
+    - cron: "0 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 获取token
+        uses: actions/create-github-app-token@v2
+        id: app-token
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
+      - name: 检出仓库代码
+        uses: actions/checkout@v4
+
+      - name: 检出memes仓库代码
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          repository: MemeCrafters/meme-generator
+          path: ${{ github.workspace }}/meme/memes
+
+      - name: 检出memes_emoji仓库代码
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          repository: anyliew/meme_emoji
+          path: ${{ github.workspace }}/meme/memes_emoji
+
+      - name: 设置 rsync
+        uses: GuillaumeFalourd/setup-rsync@v1.2
+
+      - name: 清理数据并同步
+        run: |
+          
+          rsync -a --delete \
+            ${{ github.workspace }}/meme/meme_generator/meme/memes/ \
+            meme_generator/meme/memes/
+            
+          rsync -a --delete --exclude='README.md' \
+            ${{ github.workspace }}/meme/memes_emoji/emoji/ \
+            meme_generator/meme/memes_emoji/
+            
+          rm -rf ${{ github.workspace }}/meme ${{ github.workspace }}/memes_jj ${{ github.workspace }}/memes_emoji
+
+      - name: 提交并推送更改
+        uses: actions-js/push@master
+        with:
+          github_token: ${{ steps.app-token.outputs.token }}
+          message: "同步表情更新"
+          branch: ${{ github.ref }}
+
+      - name: 触发docker构建
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: docker.yaml
+          token: ${{ steps.app-token.outputs.token }}
+
+      - name: 触发update构建
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: update.yaml
+          token: ${{ steps.app-token.outputs.token }}

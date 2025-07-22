@@ -1,0 +1,12 @@
+version: '3'
+services:
+  meme:
+    image: registry.cn-hangzhou.aliyuncs.com/candriajs/meme-generator:main
+    container_name: meme-generator
+    restart: always
+    network_mode: "bridge"
+    ports:
+      - "2244:2244"
+    environment:
+      PORT: "2244"
+    mem_limit: 1024M # 限制最大内存1GB
