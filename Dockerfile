@@ -3,6 +3,13 @@ FROM ghcr.io/astral-sh/uv:debian-slim
 WORKDIR /app
 VOLUME /data
 
+RUN uv python install 3.12
+
+RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    uv sync --locked --no-install-project --no-dev
+
 RUN apt update && \
     apt install --no-install-recommends -y \
     libgl1 \
@@ -15,8 +22,6 @@ RUN apt update && \
     libegl1-mesa && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
     apt-get clean all
-
-RUN uv python install 3.12
 
 ENV LOAD_BUILTIN_MEMES=true \
     MEME_DIRS="[\"/data/memes\"]" \
@@ -33,13 +38,15 @@ COPY ./pyproject.toml /app/pyproject.toml
 COPY ./README.md /app/README.md
 COPY ./docker/start.sh /app/start.sh
 COPY ./docker/config.toml.template /app/config.toml.template
+COPY ./uv.lock /app/uv.lock
 
 RUN fc-cache -fv && \
     rm -f /usr/share/fontconfig/conf.avail/05-reset-dirs-sample.conf && \
     mkdir -p ~/.config/meme_generator && \
     chmod +x /app/start.sh
 
-RUN uv sync --no-dev
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --locked --no-dev
 
 #  测试运行
 RUN uv run meme

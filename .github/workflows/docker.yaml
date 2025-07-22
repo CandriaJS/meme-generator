@@ -15,8 +15,8 @@ concurrency:
 
 env:
   DOCKERHUB_REPO: shiwuliya/meme-generator
-  GHCR_REPO: ghcr.io/CandriaJS/meme-generator
-  ALIYUN_REPO: registry.cn-hangzhou.aliyuncs.com/wuliya336/meme-generator
+  GHCR_REPO: ghcr.io/candriajs/meme-generator
+  ALIYUN_REPO: registry.cn-hangzhou.aliyuncs.com/candriajs/meme-generator
 
 jobs:
   build-and-push:
