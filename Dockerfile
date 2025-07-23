@@ -3,6 +3,8 @@ FROM ghcr.io/astral-sh/uv:debian-slim
 WORKDIR /app
 VOLUME /data
 
+ENV UV_COMPILE_BYTECODE=1
+ENV UV_LINK_MODE=copy
 RUN uv python install 3.12
 
 RUN --mount=type=cache,target=/root/.cache/uv \
@@ -31,6 +33,8 @@ ENV LOAD_BUILTIN_MEMES=true \
     LOG_LEVEL="INFO" \
     HOST="0.0.0.0" \
     PORT="2244"
+
+ENV PATH="/app/.venv/bin:$PATH"
 
 COPY ./meme_generator /app/meme_generator
 COPY ./resources/fonts/* /usr/share/fonts/meme/
